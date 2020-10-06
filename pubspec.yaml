@@ -36,8 +36,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/json/artists.json
-    - assets/json/test.json
 
 
