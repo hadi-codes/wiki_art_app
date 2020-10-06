@@ -13,7 +13,7 @@
 - [ ] Settings
 
 
-**Wiki-Art Api **
+**Wiki-Art Api**
 
 
 https://www.wikiart.org/en/App/GetApi
