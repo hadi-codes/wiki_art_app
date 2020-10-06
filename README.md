@@ -17,7 +17,9 @@
 
 
 https://www.wikiart.org/en/App/GetApi
+
 https://docs.google.com/document/d/1Vxi5lQnMCA21dvNm_7JVd6nQkDS3whV3YjRjbwWPfQU/edit#
+
 https://docs.google.com/document/d/1T926unU7mx9Blmx3c8UE0UQTnO3MrDbXTGYVerVQFDU/edit
 
 
