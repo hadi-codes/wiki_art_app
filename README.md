@@ -1,6 +1,7 @@
 # A Flutter Wiki Art App
 
-##TODO
+
+**TODO**
 
 - [ ] Database
 - [ ] Like Functionality
