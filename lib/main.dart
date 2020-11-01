@@ -16,6 +16,7 @@ void main() async {
 
   WikiArtApi wikiArtApi = WikiArtApi();
   // await wikiArtApi.init();
+
   runApp(MyApp(
     wikiArtApi: wikiArtApi,
   ));
@@ -28,12 +29,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => WikiArtApiCubit(wikiArtApi),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.themeData,
-        home: HomePage(),
+    return RepositoryProvider.value(
+      value: wikiArtApi,
+      child: BlocProvider(
+        create: (context) => WikiArtApiCubit(wikiArtApi),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.themeData,
+          home: HomePage(),
+        ),
       ),
     );
   }

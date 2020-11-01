@@ -1,66 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:wiki_art/Api/cubit/wiki_art_api_cubit.dart';
-import 'package:wiki_art/Api/wikiArtApi.dart';
-
-import 'Widgets/widgets.dart';
-import 'models/dataSource.dart';
+import 'package:wiki_art/pages/Home/NavBar/nav_bar.dart';
+import 'package:wiki_art/pages/Home/cubit/home_nav_bar_cubit.dart';
+import 'package:wiki_art/pages/Search/view/view.dart';
+import './../pages.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+  const HomePage({Key key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  ScrollController controller;
-
-  @override
-  void initState() {
-    controller = ScrollController();
-    super.initState();
-  }
+  final MostViewedPage _mostViewedPage = MostViewedPage();
+  final SearchPage _searchPage = SearchPage();
+  final FavoritePage _favoritePage = FavoritePage();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text("WikiArt"),
-      ),
-      body: WillPopScope(onWillPop: () async {
-        if (controller.offset == 0)
-          return true;
-        else
-          controller.animateTo(
-            0.0,
-            curve: Curves.easeOut,
-            duration: const Duration(milliseconds: 300),
-          );
-        return false;
-      }, child: BlocBuilder<WikiArtApiCubit, WikiArtApiState>(
+    return BlocProvider(
+      create: (context) => HomeNavBarCubit(),
+      child: BlocBuilder<HomeNavBarCubit, HomeNavBarState>(
         builder: (context, state) {
-          var api = context.bloc<WikiArtApiCubit>().wikiArtApi;
-          return RefreshIndicator(
-            onRefresh: () => api.getMostViwedPaintings(
-                mostViewedPaintings: MostViewedPaintings()),
-            child: PagedListView<int, Painting>.separated(
-              controller: controller,
-              dataSource: PaintingListViewDataSource(api),
-              builderDelegate: PagedChildBuilderDelegate<Painting>(
-                itemBuilder: (context, item, index) => PaintingListItem(
-                  wikiApi: api,
-                  painting: item,
-                ),
-              ),
-              separatorBuilder: (context, index) => const Divider(),
+          return Scaffold(
+            body: IndexedStack(
+              index: state.currentIndex,
+              children: [
+                _favoritePage,
+                _mostViewedPage,
+                _searchPage,
+              ],
             ),
+            bottomNavigationBar: NavBar(),
           );
         },
-      )),
+      ),
     );
   }
 }

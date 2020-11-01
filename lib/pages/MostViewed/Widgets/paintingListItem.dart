@@ -98,15 +98,11 @@ class _Painting extends StatelessWidget {
       child: Hero(
         tag: painting.image,
         child: Container(
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-          ),
           height: 400,
-          child: Center(
-            child: CachedImageWidget(
-              imageUrl: painting.image,
-            ),
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.all(20),
+          child: CachedImageWidget(
+            imageUrl: painting.image,
           ),
         ),
       ),

@@ -21,38 +21,37 @@ class _SlidePageState extends State<SlidePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Hero(
-          tag: widget.painting.image,
-          child: GestureDetector(
-            onTap: () => _showHideDetials(),
-            child: Stack(children: [
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  height: double.infinity,
-                  child: ExtendedImage.network(
-                    widget.painting.image,
-                    enableSlideOutPage: true,
-                    mode: ExtendedImageMode.gesture,
-                    heroBuilderForSlidingPage: (Widget result) {
-                      return Hero(
-                        tag: widget.painting.image,
-                        child: result,
-                        flightShuttleBuilder: (BuildContext flightContext,
-                            Animation<double> animation,
-                            HeroFlightDirection flightDirection,
-                            BuildContext fromHeroContext,
-                            BuildContext toHeroContext) {
-                          final Hero hero =
-                              (flightDirection == HeroFlightDirection.pop
-                                  ? fromHeroContext.widget
-                                  : toHeroContext.widget) as Hero;
-                          return hero.child;
-                        },
-                      );
-                    },
-                  ),
+    return Scaffold(
+      backgroundColor: Colors.red,
+      body: ExtendedImageSlidePage(
+        key: slidePagekey,
+        child: GestureDetector(
+          child: Stack(
+            children: [
+              Center(
+                child: ExtendedImage.network(
+                  widget.painting.image,
+                  enableSlideOutPage: true,
+                  mode: ExtendedImageMode.gesture,
+
+                  ///make hero better when slide out
+                  heroBuilderForSlidingPage: (Widget result) {
+                    return Hero(
+                      tag: widget.painting.image,
+                      child: result,
+                      flightShuttleBuilder: (BuildContext flightContext,
+                          Animation<double> animation,
+                          HeroFlightDirection flightDirection,
+                          BuildContext fromHeroContext,
+                          BuildContext toHeroContext) {
+                        final Hero hero =
+                            (flightDirection == HeroFlightDirection.pop
+                                ? fromHeroContext.widget
+                                : toHeroContext.widget) as Hero;
+                        return hero.child;
+                      },
+                    );
+                  },
                 ),
               ),
               Align(
@@ -65,12 +64,14 @@ class _SlidePageState extends State<SlidePage> {
                         width: double.infinity,
                         child: Column(
                           children: [
-                            Text(
-                              widget.painting.title,
-                              style: Theme.of(context).textTheme.headline6,
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                            Flexible(
+                              child: Text(
+                                widget.painting.title,
+                                style: Theme.of(context).textTheme.headline6,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
@@ -84,15 +85,63 @@ class _SlidePageState extends State<SlidePage> {
                         ))
                     : SizedBox(),
               ),
-            ]),
-          )),
-      //   child: ExtendedImageSlidePage(
-      //     key: slidePagekey,
-      //     child:
-      //     ),
-      //     slideAxis: SlideAxis.both,
-      //     slideType: SlideType.onlyImage,
-      //   ),
+            ],
+          ),
+          onTap: () {
+            _showHideDetials();
+          },
+        ),
+        slideAxis: SlideAxis.vertical,
+        slideType: SlideType.onlyImage,
+      ),
     );
+    // return Material(
+    //   child: ExtendedImageSlidePage(
+    //     key: slidePagekey,
+    //     child: Hero(
+    //         tag: widget.painting.image,
+    //         child: GestureDetector(
+    //           onTap: () => _showHideDetials(),
+    //           child: Stack(children: [
+    //             Align(
+    //               alignment: Alignment.center,
+    //               child: Container(
+    //                 height: double.infinity,
+    //                 child: ExtendedImage.network(
+    //                   widget.painting.image,
+    //                   enableSlideOutPage: true,
+    //                   mode: ExtendedImageMode.gesture,
+    //                   heroBuilderForSlidingPage: (Widget result) {
+    //                     return Hero(
+    //                       tag: widget.painting.image,
+    //                       child: result,
+    //                       flightShuttleBuilder: (BuildContext flightContext,
+    //                           Animation<double> animation,
+    //                           HeroFlightDirection flightDirection,
+    //                           BuildContext fromHeroContext,
+    //                           BuildContext toHeroContext) {
+    //                         final Hero hero =
+    //                             (flightDirection == HeroFlightDirection.pop
+    //                                 ? fromHeroContext.widget
+    //                                 : toHeroContext.widget) as Hero;
+    //                         return hero.child;
+    //                       },
+    //                     );
+    //                   },
+    //                 ),
+    //               ),
+    //             ),
+    //
+    //           ]),
+    //         )),
+    //     //   child: ExtendedImageSlidePage(
+    //     //     key: slidePagekey,
+    //     //     child:
+    //     //     ),
+    //     //     slideAxis: SlideAxis.both,
+    //     //     slideType: SlideType.onlyImage,
+    //     //   ),
+    //   ),
+    // );
   }
 }

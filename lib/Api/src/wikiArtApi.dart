@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:wiki_art/Api/src/models/artistDetails.dart';
-import 'package:wiki_art/Api/src/models/artistDictionary.dart';
 import 'package:wiki_art/Api/src/models/painting.dart';
 import 'package:wiki_art/Api/src/models/paintingDetails.dart';
-import 'models/artist.dart';
 import 'models/artistPainting.dart';
 import 'models/mostViewedPaintings.dart';
 
@@ -53,6 +52,11 @@ class WikiArtApi {
       response = await v2.get(
           "/PaintingsByArtist?id=$artistId&paginationToken=${artistPainting.paginationToken}");
 
+    return artistPaintingFromJson(response.toString());
+  }
+
+  Future<ArtistPainting> searchForPainting(String keyword) async {
+    Response response = await v2.get("/PaintingSearch?term=$keyword");
     return artistPaintingFromJson(response.toString());
   }
 }

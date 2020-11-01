@@ -13,7 +13,6 @@ dependencies:
     sdk: flutter
   dio: ^3.0.10
   infinite_scroll_pagination: ^1.1.1
-  cached_network_image: ^2.3.2+1
   google_fonts: ^1.1.0
   hive: ^1.4.4
   hive_flutter: ^0.3.1
@@ -26,6 +25,8 @@ dependencies:
   flutter_cache_manager: ^1.4.2
   extended_image: ^1.1.2
   overlay_dialog: ^0.0.3
+  peek_and_pop_dialog: ^0.0.1
+
 
 
   cupertino_icons: ^0.1.3
