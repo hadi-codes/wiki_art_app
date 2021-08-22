@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:wiki_art/Api/src/models/painting.dart';
 import 'package:wiki_art/pages/Search/bloc/search_bloc.dart';
 import 'package:wiki_art/pages/Search/widgets/widgets.dart';
@@ -12,7 +11,7 @@ class SearchForm extends StatelessWidget {
       slivers: [
         SearchBar(
           onChanged: (term) {
-            context.bloc<SearchBloc>().add(SearchTermChanged(term));
+            context.read<SearchBloc>().add(SearchTermChanged(term));
           },
         ),
         _SearchContent()
@@ -71,11 +70,6 @@ class _SearchSuccess extends StatelessWidget {
   Widget build(BuildContext context) {
     return SearchResults(
       paintings: paintings,
-      onTap: (suggestion) {
-        // Navigator.of(context).push<void>(
-        //   SynonymsPage.route(word: suggestion.value),
-        // );
-      },
     );
   }
 }

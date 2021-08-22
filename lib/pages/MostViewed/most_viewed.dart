@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:wiki_art/Api/cubit/wiki_art_api_cubit.dart';
 import 'package:wiki_art/Api/wikiArtApi.dart';
+import 'package:wiki_art/get_it.dart';
 
 import 'Widgets/widgets.dart';
-import 'models/dataSource.dart';
 
 class MostViewedPage extends StatefulWidget {
   MostViewedPage({Key key}) : super(key: key);
@@ -17,11 +15,38 @@ class MostViewedPage extends StatefulWidget {
 
 class _MostViewedPageState extends State<MostViewedPage> {
   ScrollController controller;
+  MostViewedPaintings _mostViewedPaintings = MostViewedPaintings();
 
+  final PagingController<int, Painting> _pagingController =
+      PagingController(firstPageKey: 0);
   @override
   void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      fetchItems(pageKey);
+    });
     controller = ScrollController();
     super.initState();
+  }
+
+  void fetchItems(int pageKey) async {
+    await getIt<WikiArtApi>()
+        .getMostViwedPaintings(mostViewedPaintings: _mostViewedPaintings)
+        .then((newItems) {
+      _mostViewedPaintings = newItems;
+      final nextPageKey = _mostViewedPaintings.hasMore
+          ? pageKey + newItems.painting.length
+          : null;
+      if (nextPageKey == null) {
+        _pagingController.appendLastPage(
+          newItems.painting,
+        );
+      } else {
+        _pagingController.appendPage(newItems.painting, nextPageKey);
+      }
+    }).catchError((error) {
+      print(error);
+      _pagingController.error = (error);
+    });
   }
 
   @override
@@ -31,36 +56,28 @@ class _MostViewedPageState extends State<MostViewedPage> {
       appBar: AppBar(
         title: Text("WikiArt"),
       ),
-      body: WillPopScope(onWillPop: () async {
-        if (controller.offset == 0)
-          return true;
-        else
-          controller.animateTo(
-            0.0,
-            curve: Curves.easeOut,
-            duration: const Duration(milliseconds: 300),
-          );
-        return false;
-      }, child: BlocBuilder<WikiArtApiCubit, WikiArtApiState>(
-        builder: (context, state) {
-          var api = context.bloc<WikiArtApiCubit>().wikiArtApi;
-          return RefreshIndicator(
-            onRefresh: () => api.getMostViwedPaintings(
-                mostViewedPaintings: MostViewedPaintings()),
-            child: PagedListView<int, Painting>.separated(
-              controller: controller,
-              dataSource: PaintingListViewDataSource(api),
-              builderDelegate: PagedChildBuilderDelegate<Painting>(
-                itemBuilder: (context, item, index) => PaintingListItem(
-                  wikiApi: api,
-                  painting: item,
-                ),
-              ),
-              separatorBuilder: (context, index) => const Divider(),
-            ),
-          );
+      body: WillPopScope(
+        onWillPop: () async {
+          if (controller.offset == 0)
+            return true;
+          else
+            controller.animateTo(
+              0.0,
+              curve: Curves.easeOut,
+              duration: const Duration(milliseconds: 300),
+            );
+          return false;
         },
-      )),
+        child: PagedListView<int, Painting>.separated(
+          pagingController: _pagingController,
+          builderDelegate: PagedChildBuilderDelegate<Painting>(
+            itemBuilder: (context, item, index) => PaintingListItem(
+              painting: item,
+            ),
+          ),
+          separatorBuilder: (context, index) => const Divider(),
+        ),
+      ),
     );
   }
 }

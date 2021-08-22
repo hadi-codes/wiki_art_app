@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:wiki_art/Api/src/models/painting.dart';
 import 'package:wiki_art/Widgets/cachedImage.dart';
+import 'package:wiki_art/pages/ImagePreview/slideImage.dart';
 
 class SearchResults extends StatelessWidget {
   const SearchResults({
     Key key,
-    this.onTap,
     this.paintings = const <Painting>[],
   }) : super(key: key);
 
-  final ValueSetter<Painting> onTap;
   final List<Painting> paintings;
 
   @override
@@ -26,20 +25,23 @@ class SearchResults extends StatelessWidget {
         ),
       );
     return SliverList(
-        delegate: SliverChildListDelegate(
-      List.generate(
+      delegate: SliverChildListDelegate(
+        List.generate(
           paintings.length,
           (index) => _SearchResult(
-                painting: paintings[index],
-                onTap: () => onTap(paintings[index]),
-              )),
-    ));
-    // ListView.separated(
-    //   separatorBuilder: (context, index) => Divider(),
-    //   shrinkWrap: true,
-    //   itemCount: paintings.length,
-    //   itemBuilder: (context, index) => ,
-    // );
+            painting: paintings[index],
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SlidePage(
+                  painting: paintings[index],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

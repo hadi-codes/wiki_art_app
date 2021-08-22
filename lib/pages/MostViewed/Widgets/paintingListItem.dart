@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:overlay_dialog/overlay_dialog.dart';
 import 'package:wiki_art/Api/wikiArtApi.dart';
-import 'package:wiki_art/Routes/routes.dart';
 import 'package:wiki_art/Widgets/widget.dart';
 
 import '../../pages.dart';
@@ -13,12 +10,10 @@ class PaintingListItem extends StatefulWidget {
   const PaintingListItem({
     @required this.painting,
     Key key,
-    this.wikiApi,
   })  : assert(painting != null),
         super(key: key);
 
   final Painting painting;
-  final WikiArtApi wikiApi;
 
   @override
   _PaintingListItemState createState() => _PaintingListItemState();
@@ -91,10 +86,13 @@ class _Painting extends StatelessWidget {
     return GestureDetector(
       onLongPress: () => _showCustom(context, painting),
       onDoubleTap: () => print("Save"),
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
           builder: (context) => SlidePage(
-                painting: painting,
-              ))),
+            painting: painting,
+          ),
+        ),
+      ),
       child: Hero(
         tag: painting.image,
         child: Container(
@@ -112,54 +110,57 @@ class _Painting extends StatelessWidget {
 
 void _showCustom(BuildContext context, Painting painting) {
   DialogHelper().show(
-      context,
-      DialogWidget.custom(
-        closable: true,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20.0),
-            height: 200,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
-              border: Border.all(
-                color: Theme.of(context).accentColor,
+    context,
+    DialogWidget.custom(
+      closable: true,
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+          height: 200,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+            border: Border.all(
+              color: Theme.of(context).accentColor,
+            ),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Text(
+                  "Option",
+                  style: Theme.of(context).textTheme.headline5,
+                ),
               ),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: Text(
-                    "Option",
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
+              Divider(),
+              FlatButton(
+                child: Text(
+                  "Save",
+                  style: Theme.of(context).textTheme.headline6,
                 ),
-                Divider(),
-                FlatButton(
-                  child: Text(
-                    "Save",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  onPressed: () => print("Save"),
+                onPressed: () => print("Save"),
+              ),
+              Divider(),
+              FlatButton(
+                child: Text(
+                  "View Artis",
+                  style: Theme.of(context).textTheme.headline6,
                 ),
-                Divider(),
-                FlatButton(
-                  child: Text(
-                    "View Artis",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  onPressed: () => {
-                    DialogHelper().hide(context),
-                    router.navigateTo(
-                        context, 'artist/${json.encode(painting.toJson())}')
-                  },
-                )
-              ],
-            ),
+                onPressed: () {
+                  DialogHelper().hide(context);
+                  Navigator.push(
+                    context,
+                    ArtistPage.route(painting),
+                  );
+                },
+              )
+            ],
           ),
         ),
-      ));
+      ),
+    ),
+  );
 }

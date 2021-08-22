@@ -9,7 +9,7 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeNavBarCubit, HomeNavBarState>(
       builder: (context, state) {
-        var bloc = context.bloc<HomeNavBarCubit>();
+        var bloc = context.read<HomeNavBarCubit>();
 
         return BottomNavigationBar(
           onTap: (index) => bloc.changeTo(index),

@@ -1,14 +1,14 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:peek_and_pop_dialog/peek_and_pop_dialog.dart';
-import 'package:wiki_art/Api/cubit/wiki_art_api_cubit.dart';
 import 'package:wiki_art/Api/src/models/artistDetails.dart';
 import 'package:wiki_art/Api/wikiArtApi.dart';
 import 'package:wiki_art/Widgets/widget.dart';
+import 'package:wiki_art/get_it.dart';
 import 'package:wiki_art/pages/pages.dart';
 
 import 'models/dataSource.dart';
@@ -17,25 +17,24 @@ class ArtistPage extends StatefulWidget {
   const ArtistPage({Key key, @required this.painting}) : super(key: key);
   final Painting painting;
 
+  static CupertinoPageRoute route(Painting painting) => CupertinoPageRoute(
+        builder: (context) => ArtistPage(painting: painting),
+      );
+
   @override
   _ArtistPageState createState() => _ArtistPageState();
 }
 
 class _ArtistPageState extends State<ArtistPage> {
-  WikiArtApi wikiArtApi = WikiArtApi();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.painting.artistName ?? "uknown"),
-      ),
-      body: BlocBuilder<WikiArtApiCubit, WikiArtApiState>(
-          builder: (context, state) {
-        var dataSource = PaintingGridDataSource(
-            wikiArtApi: state.wikiArtApi, artistId: widget.painting.artistId);
-
-        return FutureBuilder(
-          future: wikiArtApi.getArtistDetails(widget.painting.artistUrl),
+        appBar: AppBar(
+          title: Text(widget.painting.artistName ?? "uknown"),
+        ),
+        body: FutureBuilder(
+          future:
+              getIt<WikiArtApi>().getArtistDetails(widget.painting.artistUrl),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               ArtistDetails _artistDetails = snapshot.data;
@@ -60,7 +59,10 @@ class _ArtistPageState extends State<ArtistPage> {
                       SliverPadding(
                         padding: const EdgeInsets.all(10.0),
                         sliver: PagedSliverGrid<int, Painting>(
-                          dataSource: dataSource,
+                          pagingController: PaintingGridDataSource(
+                            wikiArtApi: getIt<WikiArtApi>(),
+                            artistId: widget.painting.artistId,
+                          ),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             childAspectRatio: 100 / 150,
@@ -77,7 +79,6 @@ class _ArtistPageState extends State<ArtistPage> {
                       ),
                     ],
                   ),
-//                    _ImageDialog()
                 ],
               );
             } else
@@ -85,9 +86,7 @@ class _ArtistPageState extends State<ArtistPage> {
                 child: CircularProgressIndicator(),
               );
           },
-        );
-      }),
-    );
+        ));
   }
 }
 

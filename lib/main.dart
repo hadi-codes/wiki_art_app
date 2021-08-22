@@ -1,44 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:wiki_art/Api/cubit/wiki_art_api_cubit.dart';
-import 'package:wiki_art/Api/wikiArtApi.dart';
 import 'package:wiki_art/pages/pages.dart';
-import 'Routes/routes.dart';
 import 'Theme/theme.dart';
+import 'get_it.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Routes.defineRoutes(router);
+  setup();
 
-  //await DefaultCacheManager().emptyCache();
-
-  WikiArtApi wikiArtApi = WikiArtApi();
-  // await wikiArtApi.init();
-
-  runApp(MyApp(
-    wikiArtApi: wikiArtApi,
-  ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key, this.wikiArtApi}) : super(key: key);
-
-  final WikiArtApi wikiArtApi;
+  const MyApp({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: wikiArtApi,
-      child: BlocProvider(
-        create: (context) => WikiArtApiCubit(wikiArtApi),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.themeData,
-          home: HomePage(),
-        ),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.themeData,
+      home: HomePage(),
     );
   }
 }

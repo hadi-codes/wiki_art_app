@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:wiki_art/Api/src/models/artistDetails.dart';
 import 'package:wiki_art/Api/src/models/painting.dart';
 import 'package:wiki_art/Api/src/models/paintingDetails.dart';
@@ -10,7 +9,6 @@ String v2ApiUrl = "https://www.wikiart.org/en/api/2";
 String v1ApiUrl = "http://www.wikiart.org/en/";
 
 class WikiArtApi {
-  WikiArtApi();
   Dio v2 = new Dio(BaseOptions(baseUrl: v2ApiUrl));
   Dio v1 = new Dio(BaseOptions(baseUrl: v1ApiUrl));
 

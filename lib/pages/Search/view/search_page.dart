@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wiki_art/Api/src/wikiArtApi.dart';
+import 'package:wiki_art/get_it.dart';
 import 'package:wiki_art/pages/Search/bloc/search_bloc.dart';
 import 'package:wiki_art/pages/Search/view/view.dart';
 
@@ -14,7 +15,7 @@ class SearchPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: BlocProvider(
             create: (context) => SearchBloc(
-              context.repository<WikiArtApi>(),
+              getIt<WikiArtApi>(),
             ),
             child: SearchForm(),
           ),
